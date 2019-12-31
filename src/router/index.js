@@ -30,6 +30,10 @@ const routes = [
     path:'/reader/:id',
     name:'Reader',
     component:()=>import('../views/Reader.vue')
+  },{
+    path:'/login',
+    name:'Login',
+    component:()=>import('../views/Login.vue')
   }
 ]
 
