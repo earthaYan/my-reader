@@ -6,13 +6,14 @@
         <div class="brand"></div>
       </template>
       <template slot="right">
-        <svg aria-hidden="true" class="icon">
+        <svg aria-hidden="true" class="icon" @click="toLogin">
           <use xlink:href="#icon-user"/>
         </svg>
       </template>
     </van-nav-bar>
     <!-- 轮播banner -->
     <van-swipe class="yy-swipe"
+      :stop-propagation=false
       :height="170">
       <van-swipe-item v-for="(banner,index) in banners" :key="index">
         <img :src="banner">
@@ -163,6 +164,20 @@ export default {
           ]
         }
       ]
+    }
+  },
+  methods:{
+    toLogin(){
+      const token=this.pub.getCookie('token')
+      if(!token){
+        // 跳转到登录页面
+        this.$router.push({
+          path:'/login/',
+        })
+      }else{
+        this.$notify({message:'已登录',type:'success',duration: 1000})
+      }
+
     }
   }
 }

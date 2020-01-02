@@ -1,7 +1,7 @@
 <template>
     <div class="category-wrapper">
         <van-nav-bar  :left-text="categoryName" left-arrow @click-left="$router.back(-1)"/>
-        <singleList :bookData="books"/>
+        <singleList/>
     </div>
 </template>
 <script>
@@ -9,19 +9,9 @@ import singleList from '../components/singleList'
 export default {
     data(){
         return{
-            books:[
-                {
-                    id:1,
-                    bookTitle:'吾家妻宝3',
-                    introduce:'2简洁简洁简洁简洁简洁简洁'
-                },
-                {
-                    id:2,
-                    bookTitle:'吾家妻宝2',
-                    introduce:'start描述信息描述信息描述信息描述信息描述信息描述信息描述信息描述信息描述信息描述信息描述信息描述信息描述信息描述信息描述信息描述信息描述信息描述信息描述信息描述信息描述信息描述信息end'
-                },
-            ]
         }
+    },
+    created(){
     },
     computed:{
         categoryName:function () {
@@ -43,6 +33,8 @@ export default {
     },
     components:{
         singleList
+    },
+    methods:{
     }
 }
 </script>

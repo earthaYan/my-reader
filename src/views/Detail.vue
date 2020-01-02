@@ -76,7 +76,8 @@ export default {
         
     }
     .book-info{
-        padding: 0 15px;
+        padding: 15px;
+        padding-bottom: 0;
         .bref{
             .left-detail-img{
                 float: left;

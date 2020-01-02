@@ -12,6 +12,7 @@ function getApi(){
     const baseUrl=config.baseUrl
     return{
        Login:`${baseUrl}Login`,//登录接口
+       SearchNovel:`${baseUrl}SearchNovel`,//搜索小说
     }
 }
 // 写入cookie,不提供失效时间时，cookie默认有效期为2个月
