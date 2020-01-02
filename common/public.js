@@ -13,6 +13,9 @@ function getApi(){
     return{
        Login:`${baseUrl}Login`,//登录接口
        SearchNovel:`${baseUrl}SearchNovel`,//搜索小说
+       GetNovelById:`${baseUrl}GetNovelById`,//根据图书id获取书籍信息
+       GetNovelRecommendEstateById:`${baseUrl}GetNovelRecommendEstateById`,//获取推荐图书
+
     }
 }
 // 写入cookie,不提供失效时间时，cookie默认有效期为2个月

@@ -1,6 +1,6 @@
 <template>
     <div class="detail">
-        <van-nav-bar left-text="帝霸" left-arrow @click-left="$router.go(-1)"  @click-right="$router.push('/')">
+        <van-nav-bar :left-text="detailData.bookName" left-arrow @click-left="$router.go(-1)"  @click-right="$router.push('/')">
             <svg class="icon" slot="right">
                 <use xlink:href="#icon-tubiao15"/>
             </svg>
@@ -8,16 +8,16 @@
         <div class="book-info">
             <div class="bref">
                 <div class="left-detail-img">
-                    <img src="../assets/img/cover.jpg" alt="">
+                    <img :src="detailData.imagePath" alt="">
                 </div>
                 <div class="right">
-                    <div class="title">帝霸</div>
-                    <div class="author">作者:<span>作者名称</span></div>
-                    <div class="category">分类:<span>书籍分类</span></div>
-                    <div class="words">字数:<span>23.4万字</span></div>
+                    <div class="title">{{detailData.bookName}}</div>
+                    <div class="author">作者:<span>{{detailData.author}}</span></div>
+                    <div class="category">分类:<span>{{detailData.category}}</span></div>
+                    <div class="words">字数:<span>{{Math.round(detailData.wordCount/10000)}}万字</span></div>
                     <div class="rate">
-                        <van-rate v-model="stars"  readonly allow-half/>
-                        <span>{{stars}}</span>
+                        <van-rate v-model="detailData.rate"  readonly allow-half/>
+                        <span>{{detailData.rate|parseNum}}</span>
                     </div>
                 </div>              
             </div>
@@ -26,23 +26,23 @@
                 <van-button type="default">查看目录</van-button>
             </div>
             <div class="intro">
-                千万年前，李七夜栽下一株翠竹。八百万年前，李七夜养了一条鲤鱼。五百万年前，李七夜收养一个小女孩。今天，李七夜一觉醒来，翠竹修练成神灵，鲤鱼化作金龙，小女孩成为九界女帝。这是一个养成
+                {{detailData.briefIntroduction}}
             </div>
             <div class="tags">
                 <h3>类别标签</h3>
                 <div>
-                    <van-tag size="large" type="danger" plain>标签1</van-tag>
-                    <van-tag size="large" type="primary" plain>标签2</van-tag>
+                    <van-tag v-for="tag in detailData.labels" :key="tag.tagId" size="large" :type="tag.tagId==1?'danger':'primary'" plain
+                    >{{tag.tagNameWithCulture}}</van-tag>
                 </div>
             </div>
             <div class="like">
                 <h3>喜欢本书的人也喜欢</h3>
                 <div class="book-list">
-                    <div class="books" v-for="(book,index) in 3" :key="index">
-                        <div class="book-img">
-                            <img src="../assets/img/cover.jpg" alt="">
+                    <div class="books" v-for="(recommend,index) in recommendData" :key="index">
+                        <div class="book-img" @click="toDetail(recommend.bookId)">
+                            <img :src="recommend.defaultImage" alt="">
                         </div>
-                        <div class="book-name">图书名称</div>
+                        <div class="book-name">{{recommend.bookName}}</div>
                     </div>
                 </div>
             </div>
@@ -53,12 +53,47 @@
 export default {
     data(){
         return {
-            stars:2.5
+            detailData:{},
+            recommendData:[]
+        }
+    },
+    created(){
+        this.getDetailInfo()
+        this.getRecommend()
+    },
+    filters:{
+        parseNum(val){
+            return new Number(val).toFixed(1)
         }
     },
     methods:{
         openReader(){
             this.$router.push('/reader/1')
+        },
+        getDetailInfo(){
+            this.axios.get(this.pub.getApi().GetNovelById+`?id=${this.$route.params.id}`).then(res=>{
+                if(res.data.code==0&&res.data.result){
+                    this.detailData=res.data.result
+                }
+            }).catch(e=>{console.log(e)})
+        },
+        getRecommend(){
+            this.axios.get(this.pub.getApi().GetNovelRecommendEstateById+`?id=${this.$route.params.id}`).then(res=>{
+                if(res.data.code==0&&res.data.result){
+                    this.recommendData=res.data.result
+                }
+            }).catch(e=>{console.log(e)})
+        },
+        toDetail(index){
+            const token=this.pub.getCookie('token')
+            if(token){
+                this.$router.push({
+                    name:'Detail',
+                    params:{
+                        id:index
+                    }
+                })
+            }
         }
     }
 }
@@ -82,9 +117,12 @@ export default {
             .left-detail-img{
                 float: left;
                 width: 100px;
+                height: 129px;
                 margin-right: 30px;
                 img{
                     width: 100%;
+                    height: 100%;
+                    object-fit: fill;
                 }
             }
         }
@@ -136,13 +174,15 @@ export default {
                 .books{
                     .book-img{
                         width: 100px;
+                        height: 129px;
                         img{
-                            max-height: 100%;
-                            max-width: 100%;
+                            height: 100%;
+                            width: 100%;
                         }
                     }
                     .book-name{
                         text-align: center;
+                        padding-top: 10px;
                     }
                 }
             }
